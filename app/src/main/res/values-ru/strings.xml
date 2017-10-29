@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">My Weather App</string>
+    <string name="hello_world">Hello World!</string>
+    <string name="choose_the_city">Выберите город:</string>
+    <string name="show_weather_forecast">Показать прогноз погоды</string>
+
+    <string-array name="city_selection">
+        <item>Москва</item>
+        <item>Нью Йорк</item>
+        <item>Лондон</item>
+        <item>Рим</item>
+        <item>Токио</item>
+    </string-array>
+
+    <string-array name="city_weather_description">
+        <item>погода в Москве</item>
+        <item>погода в Нью Йорке</item>
+        <item>погода в Лондоне</item>
+        <item>погода в Риме</item>
+        <item>погода в Токио</item>
+    </string-array>
+
+</resources>
