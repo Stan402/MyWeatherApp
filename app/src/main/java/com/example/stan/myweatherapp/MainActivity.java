@@ -1,6 +1,7 @@
 package com.example.stan.myweatherapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,24 +31,40 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(MY_SETTINGS, Context.MODE_PRIVATE);
     }
 
-    View.OnClickListener onClickListener = new View.OnClickListener() {
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             if (view.getId() == R.id.button_show_forecast) {
-                textviewForecast.setText(WeatherSpec.getForecast(MainActivity.this, spinnerForCity.getSelectedItemPosition()));
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(SAVED_CITY, spinnerForCity.getSelectedItemPosition());
-                editor.apply();
+                showForecastForCity();
             }
         }
     };
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(SAVED_CITY, spinnerForCity.getSelectedItemPosition());
+        editor.apply();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        if (sharedPreferences.contains(SAVED_CITY)) {
             spinnerForCity.setSelection(sharedPreferences.getInt(SAVED_CITY, 0));
-            textviewForecast.setText(WeatherSpec.getForecast(MainActivity.this, spinnerForCity.getSelectedItemPosition()));
-        }
+        //showForecastForCity();
+    }
+
+    private void showForecastForCity() {
+        //textviewForecast.setText(WeatherSpec.getForecast(MainActivity.this, spinnerForCity.getSelectedItemPosition()));
+        Intent intent =new Intent(MainActivity.this, DisplayForecastActivity.class);
+        intent.putExtra(DisplayForecastActivity.CITY_TAG, spinnerForCity.getSelectedItemPosition());
+        startActivity(intent);
+
+    }
+
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
     }
 }

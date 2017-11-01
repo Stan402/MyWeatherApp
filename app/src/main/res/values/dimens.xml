@@ -2,4 +2,5 @@
 <resources>
     <dimen name="standart_margin">15dp</dimen>
     <dimen name="header_text_size">20sp</dimen>
+    <dimen name="forecast_font_size">20sp</dimen>
 </resources>
