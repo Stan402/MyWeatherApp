@@ -12,7 +12,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView textviewForecast;
+    static final int REQUEST_CODE = 5;
+    private TextView textviewUnder;
     private Spinner spinnerForCity;
 
     private static final String SAVED_CITY = "saved_city_position";
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textviewForecast = (TextView) findViewById(R.id.textview_weather_forecast);
+        textviewUnder = (TextView) findViewById(R.id.textview_under);
         Button showForecastButton = (Button) findViewById(R.id.button_show_forecast);
         spinnerForCity = (Spinner) findViewById(R.id.spinner_for_city);
         showForecastButton.setOnClickListener(onClickListener);
@@ -59,12 +60,17 @@ public class MainActivity extends AppCompatActivity {
         //textviewForecast.setText(WeatherSpec.getForecast(MainActivity.this, spinnerForCity.getSelectedItemPosition()));
         Intent intent =new Intent(MainActivity.this, DisplayForecastActivity.class);
         intent.putExtra(DisplayForecastActivity.CITY_TAG, spinnerForCity.getSelectedItemPosition());
-        startActivity(intent);
-
+        startActivityForResult(intent, REQUEST_CODE);
+        //startActivity(intent);
     }
 
     @Override
-    public void onContentChanged() {
-        super.onContentChanged();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE){
+            int cityNumber = data.getIntExtra(DisplayForecastActivity.RESULT_TAG, 0);
+            textviewUnder.setText(String.format("The weather forecast shown for %s",
+                                WeatherSpec.getCityName(MainActivity.this, cityNumber)));
+        }
     }
 }

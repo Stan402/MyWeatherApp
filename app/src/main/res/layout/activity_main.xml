@@ -30,7 +30,7 @@
         android:text="@string/show_weather_forecast" />
 
     <TextView
-        android:id="@+id/textview_weather_forecast"
+        android:id="@+id/textview_under"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/standart_margin" />
