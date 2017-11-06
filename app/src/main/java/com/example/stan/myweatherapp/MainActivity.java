@@ -3,6 +3,7 @@ package com.example.stan.myweatherapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -114,5 +115,11 @@ public class MainActivity extends AppCompatActivity {
         //Единственное что не сохраняется при пересоздании это инфа о предыдущем просмотре - ее и сохраняем
         outState.putCharSequence(PREVIOUS_CITY_INFO, textviewUnder.getText());
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        Log.d(TAG,"onConfigurationChanged");
+        super.onConfigurationChanged(newConfig);
     }
 }
