@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -18,8 +19,16 @@ public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_CODE = 5;
     private static final String PREVIOUS_CITY_INFO = "previous city info";
+    static final String FLAG_FOR_HUMIDITY = "flag for humidity";
+    static final String FLAG_FOR_PRESSURE = "flag for pressure";
+    static final String FLAG_FOR_TOMORROW = "flag for tomorrow";
+    static final String FLAG_FOR_NEXT_WEEK = "flag for next week";
     private TextView textviewUnder;
     private Spinner spinnerForCity;
+    private CheckBox checkBoxForPressure;
+    private CheckBox checkBoxForHumidity;
+    private CheckBox checkBoxForTomorrow;
+    private CheckBox checkBoxForNextWeek;
 
     private static final String SAVED_CITY = "saved_city_position";
     private static final String MY_SETTINGS = "my_settings";
@@ -32,9 +41,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textviewUnder = (TextView) findViewById(R.id.textview_under);
-        Button showForecastButton = (Button) findViewById(R.id.button_show_forecast);
         spinnerForCity = (Spinner) findViewById(R.id.spinner_for_city);
+        Button showForecastButton = (Button) findViewById(R.id.button_show_forecast);
         showForecastButton.setOnClickListener(onClickListener);
+        checkBoxForHumidity = (CheckBox) findViewById(R.id.checkbox_for_humidity);
+        checkBoxForPressure = (CheckBox) findViewById(R.id.checkbox_for_pressure);
+        checkBoxForTomorrow = (CheckBox) findViewById(R.id.checkbox_for_tomorrow);
+        checkBoxForNextWeek = (CheckBox) findViewById(R.id.checkbox_for_next_week);
         sharedPreferences = getSharedPreferences(MY_SETTINGS, Context.MODE_PRIVATE);
     }
 
@@ -52,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onPause");
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(SAVED_CITY, spinnerForCity.getSelectedItemPosition());
+        editor.putBoolean(FLAG_FOR_HUMIDITY, checkBoxForHumidity.isChecked());
+        editor.putBoolean(FLAG_FOR_PRESSURE, checkBoxForPressure.isChecked());
+        editor.putBoolean(FLAG_FOR_TOMORROW, checkBoxForTomorrow.isChecked());
+        editor.putBoolean(FLAG_FOR_NEXT_WEEK, checkBoxForNextWeek.isChecked());
         editor.apply();
         super.onPause();
     }
@@ -61,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onResume");
         super.onResume();
         spinnerForCity.setSelection(sharedPreferences.getInt(SAVED_CITY, 0));
+        checkBoxForHumidity.setChecked(sharedPreferences.getBoolean(FLAG_FOR_HUMIDITY, false));
+        checkBoxForPressure.setChecked(sharedPreferences.getBoolean(FLAG_FOR_PRESSURE, false));
+        checkBoxForTomorrow.setChecked(sharedPreferences.getBoolean(FLAG_FOR_TOMORROW, false));
+        checkBoxForNextWeek.setChecked(sharedPreferences.getBoolean(FLAG_FOR_NEXT_WEEK, false));
         //showForecastForCity();
     }
 
@@ -68,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
         //textviewForecast.setText(WeatherSpec.getForecast(MainActivity.this, spinnerForCity.getSelectedItemPosition()));
         Intent intent = new Intent(MainActivity.this, DisplayForecastActivity.class);
         intent.putExtra(DisplayForecastActivity.CITY_TAG, spinnerForCity.getSelectedItemPosition());
+        intent.putExtra(FLAG_FOR_HUMIDITY,checkBoxForHumidity.isChecked());
+        intent.putExtra(FLAG_FOR_PRESSURE,checkBoxForPressure.isChecked());
+        intent.putExtra(FLAG_FOR_TOMORROW,checkBoxForTomorrow.isChecked());
+        intent.putExtra(FLAG_FOR_NEXT_WEEK,checkBoxForNextWeek.isChecked());
+
         startActivityForResult(intent, REQUEST_CODE);
         //startActivity(intent);
     }

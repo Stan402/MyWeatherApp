@@ -5,6 +5,10 @@
     <string name="show_weather_forecast">Show weather forecast</string>
     <string name="button_share_forecast">Share with friend</string>
     <string name="textview_nothing_to_show">got nothing to show</string>
+    <string name="checkbox_show_pressure">Show Pressure</string>
+    <string name="checkbox_for_show_humidity">Show humidity</string>
+    <string name="checkbox_for_tomorrow_forecast">tomorrow forecast</string>
+    <string name="checkbox_for_next_week_forecast">next week forecast</string>
 
     <string-array name="city_selection">
         <item>Moscow</item>
