@@ -18,6 +18,11 @@ class WeatherSpec {
         return result[position];
     }
 
+    static int getCityCount(Context context){
+        String[] result = context.getResources().getStringArray(R.array.city_selection);
+        return result.length;
+    }
+
     static boolean doesIntentHaveReceivers(Context context, Intent intent){
         PackageManager packageManager = context.getPackageManager();
         List<ResolveInfo> receivers = packageManager.queryIntentActivities(intent, 0);
