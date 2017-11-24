@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +19,7 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CityListFragment.CityListListener, DisplayForecastFragment.OnDisplayForecastListener{
 
     private static final String TAG = "############";
 
@@ -46,31 +48,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textviewUnder = (TextView) findViewById(R.id.textview_under);
-//        spinnerForCity = (Spinner) findViewById(R.id.spinner_for_city);
-//        Button showForecastButton = (Button) findViewById(R.id.button_show_forecast);
-//        showForecastButton.setOnClickListener(onClickListener);
         checkBoxForHumidity = (CheckBox) findViewById(R.id.checkbox_for_humidity);
         checkBoxForPressure = (CheckBox) findViewById(R.id.checkbox_for_pressure);
         checkBoxForTomorrow = (CheckBox) findViewById(R.id.checkbox_for_tomorrow);
         checkBoxForNextWeek = (CheckBox) findViewById(R.id.checkbox_for_next_week);
         sharedPreferences = getSharedPreferences(MY_SETTINGS, Context.MODE_PRIVATE);
 
-        //Recycle block
-        RecyclerView cityRecyclerView = (RecyclerView) findViewById(R.id.recycler_view); //Найдем наш RecyclerView
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this); //Создадим LinearLayoutManager
-        layoutManager.setOrientation(VERTICAL);//Обозначим ориентацию
-        cityRecyclerView.setLayoutManager(layoutManager);//Назначим нашему RecyclerView созданный ранее layoutManager
-        cityRecyclerView.setAdapter(new MyAdapter());//Назначим нашему RecyclerView адаптер
-    }
+        //View fragmentContainer = findViewById(R.id.fragment_container);
+        CityListFragment cityListFragment = new CityListFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.add(R.id.fragment_container, cityListFragment);
+        transaction.commit();
 
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-//            if (view.getId() == R.id.button_show_forecast) {
-//                showForecastForCity();
-//            }
-        }
-    };
+    }
 
     @Override
     protected void onPause() {
@@ -96,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showForecastForCity(int position) {
-        //textviewForecast.setText(WeatherSpec.getForecast(MainActivity.this, spinnerForCity.getSelectedItemPosition()));
         Intent intent = new Intent(MainActivity.this, DisplayForecastActivity.class);
         intent.putExtra(DisplayForecastActivity.CITY_TAG, position);
         intent.putExtra(FLAG_FOR_HUMIDITY,checkBoxForHumidity.isChecked());
@@ -159,44 +149,24 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
     }
 
-    private class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
-            return new MyViewHolder(inflater, parent);
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            holder.bind(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return WeatherSpec.getCityCount(getApplicationContext());
-        }
+    @Override
+    public void onCityListItemClick(int position) {
+        DisplayForecastFragment forecastFragment = new DisplayForecastFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        forecastFragment.setCityNumber(position);
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragment_container, forecastFragment);
+        transaction.commit();
     }
 
-    private class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
-        TextView cityNameTextView;
-
-        public MyViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.city_list_item, parent, false));
-            itemView.setOnClickListener(this);
-            cityNameTextView = (TextView) itemView.findViewById(R.id.city_name_text_view);
-        }
-
-        public void bind(int position){
-            String cityName = WeatherSpec.getCityName(getApplicationContext(), position);
-            cityNameTextView.setText(cityName);
-        }
-
-        @Override
-        public void onClick(View v) {
-            showForecastForCity(getLayoutPosition());
-
-        }
+    @Override
+    public void onBackToList(int position) {
+        textviewUnder.setText(String.format("The weather forecast shown for %s",
+                WeatherSpec.getCityName(MainActivity.this, position)));
+        CityListFragment cityListFragment = new CityListFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragment_container, cityListFragment);
+        transaction.commit();
     }
 }
